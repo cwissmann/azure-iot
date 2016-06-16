@@ -1,5 +1,7 @@
-﻿using System;
+﻿using GHIElectronics.UWP.Shields;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -22,9 +24,35 @@ namespace fezhat_sample
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        private FEZHAT hat;
+        private DispatcherTimer timer;
+
         public MainPage()
         {
             this.InitializeComponent();
+
+            this.Setup();
+        }
+
+        private async void Setup()
+        {
+            this.hat = await FEZHAT.CreateAsync();
+
+            this.timer = new DispatcherTimer();
+            this.timer.Interval = TimeSpan.FromSeconds(5);
+            this.timer.Tick += OnTick;
+            this.timer.Start();
+
+            this.hat.D2.Color = FEZHAT.Color.Blue;
+        }
+
+        private void OnTick(object sender, object e)
+        {
+            var temperature = this.hat.GetTemperature().ToString("N2");
+            var lightlevel = this.hat.GetLightLevel().ToString("P2");
+
+            Debug.WriteLine("Temperature: " + temperature);
+            Debug.WriteLine("LightLevel:  " + lightlevel);
         }
     }
 }
