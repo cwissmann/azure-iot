@@ -1,0 +1,2 @@
+MainPackage=C:\Users\christian.wissmann\Develop\IoT\iot\fezhat-sample\fezhat-sample\bin\ARM\Debug\fezhat-sample_0.1.0.0_ARM_Debug.appx
+SymbolPackage=C:\Users\christian.wissmann\Develop\IoT\iot\fezhat-sample\fezhat-sample\AppPackages\fezhat-sample_0.1.0.0_Debug_Test\fezhat-sample_0.1.0.0_ARM_Debug.appxsym

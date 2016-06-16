@@ -5,6 +5,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -42,17 +44,28 @@ namespace fezhat_sample
             this.timer.Interval = TimeSpan.FromSeconds(5);
             this.timer.Tick += OnTick;
             this.timer.Start();
-
-            this.hat.D2.Color = FEZHAT.Color.Blue;
         }
 
         private void OnTick(object sender, object e)
         {
+            LedSignal();
+
             var temperature = this.hat.GetTemperature().ToString("N2");
             var lightlevel = this.hat.GetLightLevel().ToString("P2");
 
             Debug.WriteLine("Temperature: " + temperature);
             Debug.WriteLine("LightLevel:  " + lightlevel);
+        }
+
+        private async void LedSignal()
+        {
+            this.hat.D3.Color = FEZHAT.Color.Red;
+            Debug.WriteLine("LedSignal:  RED");
+
+            await Task.Delay(2000);
+
+            this.hat.D3.Color = FEZHAT.Color.Black;
+            Debug.WriteLine("LedSignal:  BLACK");
         }
     }
 }
