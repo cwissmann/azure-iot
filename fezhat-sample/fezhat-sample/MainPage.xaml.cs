@@ -1,10 +1,13 @@
 ﻿using GHIElectronics.UWP.Shields;
+using Microsoft.Azure.Devices.Client;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -29,6 +32,12 @@ namespace fezhat_sample
         private FEZHAT hat;
         private DispatcherTimer timer;
 
+        private static DeviceClient deviceClient;
+        private string iotHubUri = "[iotHubUri]";
+        private string deviceId = "[deviceId]";
+        private string deviceKey = "[deviceKey]";
+        private string connectionString = "[connectionString]";
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -38,6 +47,15 @@ namespace fezhat_sample
 
         private async void Setup()
         {
+            try
+            {
+                deviceClient = DeviceClient.CreateFromConnectionString(connectionString, TransportType.Http1);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+
             this.hat = await FEZHAT.CreateAsync();
 
             this.timer = new DispatcherTimer();
@@ -46,7 +64,7 @@ namespace fezhat_sample
             this.timer.Start();
         }
 
-        private void OnTick(object sender, object e)
+        private async void OnTick(object sender, object e)
         {
             LedSignal();
 
@@ -55,6 +73,18 @@ namespace fezhat_sample
 
             Debug.WriteLine("Temperature: " + temperature);
             Debug.WriteLine("LightLevel:  " + lightlevel);
+
+            var weatherDataPoint = new
+            {
+                deviceId = deviceId,
+                temperature = temperature,
+                lightlevel = lightlevel,
+                time = DateTime.Now
+            };
+
+            var messageString = JsonConvert.SerializeObject(weatherDataPoint);
+            var message = new Message(Encoding.ASCII.GetBytes(messageString));
+            await deviceClient?.SendEventAsync(message);
         }
 
         private async void LedSignal()
