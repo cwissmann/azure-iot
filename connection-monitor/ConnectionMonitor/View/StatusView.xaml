@@ -1,0 +1,52 @@
+﻿<Page
+    x:Class="ConnectionMonitor.StatusView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:ConnectionMonitor"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    DataContext="{Binding Source={StaticResource ResourceKey=Locator}, Path=Status}">
+
+    <Page.Resources>
+        <Style x:Key="EllipsStyle" TargetType="Ellipse">
+            <Setter Property="Stroke" Value="White"/>
+            <Setter Property="Width" Value="150"/>
+            <Setter Property="Height" Value="150"/>
+            <Setter Property="Margin" Value="20"/>
+        </Style>
+        <Style x:Key="TextStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+    </Page.Resources>
+
+    <Grid Background="Black">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="4*"/>
+            <RowDefinition Height="2*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Connection status"
+                   Grid.Row="0"
+                   FontSize="45"
+                   Style="{StaticResource ResourceKey=TextStyle}"/>
+
+        <StackPanel Orientation="Horizontal"
+                    Grid.Row="1"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center">
+            <Ellipse Fill="{Binding Path=GreenBrush}"
+                     Style="{StaticResource ResourceKey=EllipsStyle}"/>
+            <Ellipse Fill="{Binding Path=RedBrush}"
+                     Style="{StaticResource ResourceKey=EllipsStyle}"/>
+        </StackPanel>
+
+        <TextBlock Text="{Binding Path=StatusMessage}"
+                   Grid.Row="2"
+                   FontSize="35"
+                   Style="{StaticResource ResourceKey=TextStyle}"/>
+    </Grid>
+</Page>
