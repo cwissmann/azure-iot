@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -22,9 +23,32 @@ namespace UltrasonicDistanceApp
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        private HCSR04 ultrasonicSensor;
+
+        private DispatcherTimer timer;
+
         public MainPage()
         {
             this.InitializeComponent();
+
+            this.Setup();
+        }
+
+        private void Setup()
+        {
+            this.ultrasonicSensor = new HCSR04(27, 22);
+
+            this.timer = new DispatcherTimer();
+            this.timer.Interval = TimeSpan.FromMilliseconds(500);
+            this.timer.Tick += this.OnTick;
+            this.timer.Start();
+        }
+
+        private void OnTick(object sender, object e)
+        {
+            var distance = this.ultrasonicSensor.GetDistance();
+
+            Debug.WriteLine("Distance: {0} cm", distance);
         }
     }
 }
