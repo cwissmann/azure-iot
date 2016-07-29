@@ -24,6 +24,7 @@ namespace UltrasonicDistanceApp
     public sealed partial class MainPage : Page
     {
         private HCSR04 ultrasonicSensor;
+        private LEDController ledController;
 
         private DispatcherTimer timer;
 
@@ -37,6 +38,7 @@ namespace UltrasonicDistanceApp
         private void Setup()
         {
             this.ultrasonicSensor = new HCSR04(27, 22);
+            this.ledController = new LEDController(19, 26);
 
             this.timer = new DispatcherTimer();
             this.timer.Interval = TimeSpan.FromMilliseconds(500);
@@ -49,6 +51,17 @@ namespace UltrasonicDistanceApp
             var distance = this.ultrasonicSensor.GetDistance();
 
             Debug.WriteLine("Distance: {0} cm", distance);
+
+            if (distance > 10.0)
+            {
+                Debug.WriteLine("Green");
+                this.ledController.TurnOnGreenPin();
+            }
+            else
+            {
+                Debug.WriteLine("Red");
+                this.ledController.TurnOnRedPin();
+            }
         }
     }
 }

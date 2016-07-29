@@ -35,29 +35,39 @@ namespace UltrasonicDistanceApp
 
         public double GetDistance()
         {
-            ManualResetEvent mre = new ManualResetEvent(false);
-            mre.WaitOne(500);
-            Stopwatch pulseLength = new Stopwatch();
-
-            this.TriggerPin.Write(GpioPinValue.High);
-            mre.WaitOne(TimeSpan.FromMilliseconds(0.01));
-            this.TriggerPin.Write(GpioPinValue.Low);
-
-            while (this.EchoPin.Read() == GpioPinValue.Low)
+            try
             {
-            }
-            pulseLength.Start();
+                ManualResetEvent mre = new ManualResetEvent(false);
+                mre.WaitOne(500);
+                Stopwatch pulseLength = new Stopwatch();
 
-            while (this.EchoPin.Read() == GpioPinValue.High)
+                this.TriggerPin.Write(GpioPinValue.High);
+                mre.WaitOne(TimeSpan.FromMilliseconds(0.01));
+                this.TriggerPin.Write(GpioPinValue.Low);
+
+                while (this.EchoPin.Read() == GpioPinValue.Low)
+                {
+                }
+                pulseLength.Start();
+
+                while (this.EchoPin.Read() == GpioPinValue.High)
+                {
+                }
+                pulseLength.Stop();
+
+                TimeSpan timeBetween = pulseLength.Elapsed;
+                Debug.WriteLine(timeBetween.ToString());
+                double distance = timeBetween.TotalSeconds * 17000;
+
+                return distance;
+            }
+            catch (Exception e)
             {
+                Debug.WriteLine("EXCEPTION GetDistance Message: {0}", e.Message);
+
+                return 0.0;
             }
-            pulseLength.Stop();
-
-            TimeSpan timeBetween = pulseLength.Elapsed;
-            Debug.WriteLine(timeBetween.ToString());
-            double distance = timeBetween.TotalSeconds * 17000;
-
-            return distance;            
+                       
         }
     }
 }
